@@ -8,7 +8,7 @@ load_system("Plant")
 load_system("Controller")
 % The input of this function should be 'Separate', 'MP', 'Bridge',
 % 'Parallel', or 'MCI'
-winding_configuration = "MCI";
+winding_configuration = "Parallel";
 
 winding_conf_dic = dictionary("Separate", 1, ...
                               "MP", 2, ...
@@ -93,7 +93,7 @@ elseif (abs(alpha_t + 2*pi/3) < epsilon && abs(alpha_s + pi/3) < epsilon) % case
 end
 
 %% Machine constants
-Ke = 0.003;  % back-emf constant (Vpk/(mech rad/s))
+Ke = 0.00667;  % back-emf constant (Vpk/(mech rad/s))
 % Ke = 0;  % back-emf constant (Vpk/(mech rad/s))
 Kt = 0.02; % Torque constant (Nm/Apk)
 Kf = 1.8; % Force constant (N/Apk)
