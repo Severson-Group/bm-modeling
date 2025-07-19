@@ -26,12 +26,12 @@ tau_ref = 0.2; % Torque reference (Nm)
 tau_start = (1/6)*Tend; % Torque start time (s)
 tau_end = (4/6)*Tend; % Torque end time (s)
 
-fx_ref = 9; % fx force reference (N)
-fx_start = 0; % x-axis force start time (s)
-fx_end = (2/6)*Tend; % x-axis force end time (s)
-fy_ref = 9; % fy force reference (N)
-fy_start = (3/6)*Tend; % y-axis force start time (s)
-fy_end = (5/6)*Tend; % y-axis force end time (s)
+Fx_ref = 9; % Fx force reference (N)
+Fx_start = 0; % x-axis force start time (s)
+Fx_end = (2/6)*Tend; % x-axis force end time (s)
+Fy_ref = 9; % Fy force reference (N)
+Fy_start = (3/6)*Tend; % y-axis force start time (s)
+Fy_end = (5/6)*Tend; % y-axis force end time (s)
 
 id_ref = 0; % id current reference (A)
 id_start = 0; % d-axis current start time (s)
@@ -269,7 +269,7 @@ runObj = Simulink.sdi.Run.getLatest;
 
 % List of variables to extract
 obj2ext = {'time','vd','vq','id_ref','iq_ref','id','iq','tau_ref','tau', ...
-                  'vx','vy','ix_ref','iy_ref','ix','iy','fx_ref','fy_ref','fx','fy', ...
+                  'vx','vy','ix_ref','iy_ref','ix','iy','Fx_ref','Fy_ref','Fx','Fy', ...
                   'i_term', 'v_term', ...
                   'EMF_1', 'EMF_2', 'EMF_3', 'EMF_4', 'EMF_5', 'EMF_6'};
 
@@ -306,10 +306,10 @@ xlim([0 Tmax]);
 subplot(6,1,2);
 % Plot forces
 hold on;
-plot(time, squeeze(sig_val.fx_ref), 'LineStyle', '--', 'Color', 'r', 'LineWidth', lw);
-plot(time, squeeze(sig_val.fx), 'Color', 'r', 'LineWidth', lw);
-plot(time, squeeze(sig_val.fy_ref), 'LineStyle', '--', 'Color', 'g', 'LineWidth', lw);
-plot(time, squeeze(sig_val.fy), 'Color', 'g', 'LineWidth', lw);
+plot(time, squeeze(sig_val.Fx_ref), 'LineStyle', '--', 'Color', 'r', 'LineWidth', lw);
+plot(time, squeeze(sig_val.Fx), 'Color', 'r', 'LineWidth', lw);
+plot(time, squeeze(sig_val.Fy_ref), 'LineStyle', '--', 'Color', 'g', 'LineWidth', lw);
+plot(time, squeeze(sig_val.Fy), 'Color', 'g', 'LineWidth', lw);
 xlabel('Time [s]','Interpreter','latex');
 ylabel('$F_{\mathrm{x}}$, $F_{\mathrm{y}}$ (N)','Interpreter','latex');
 legend('$F_\mathrm{x}^\mathrm{ref}$','$F_{\mathrm{x}}$','$F_\mathrm{y}^\mathrm{ref}$','$F_{\mathrm{y}}$','Interpreter','latex','Location','east');
