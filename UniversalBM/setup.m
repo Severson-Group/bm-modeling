@@ -8,7 +8,7 @@ load_system("Plant")
 load_system("Controller")
 % The input of this function should be 'Separate', 'MP', 'Bridge',
 % 'Parallel', or 'MCI'
-winding_configuration = "Parallel";
+winding_configuration = "MCI";
 
 winding_conf_dic = dictionary("Separate", 1, ...
                               "MP", 2, ...
@@ -281,115 +281,94 @@ for idx = 2:length(obj2ext)
 end
 
 time = sig_obj.(obj2ext{2}).Values.Time;
+time = time*1e3;  % Convert to msec
+Tmax = Tend*1e3;
 
 %% Plot figure
-width = 2*5.43; 
-height = 1.2*3*4.38 / 3;
+width = 5.43*0.7; 
+height = 1.2*3*4.38*2 / 3*0.7;
 set(0,'units','inches');
 Inch_SS = get(0,'screensize');
 lw = 1;  % line width
 
 figure1 = figure;
-% Plot terminal current
-subplot(3,2,1);
+% Plot torque
+subplot(6,1,1);
 hold on;
-colors = lines(6); % Generate 6 types of colors
-for i = 1:6 % Columns 1-6 contain current data
+plot(time, squeeze(sig_val.torque_ref), 'LineStyle', '--', 'Color', 'b', 'LineWidth', lw);
+plot(time, squeeze(sig_val.torque), 'Color', 'b', 'LineWidth', lw);
+xlabel('Time [s]','Interpreter','latex');
+ylabel('$\tau$ (Nm)','Interpreter','latex');
+legend('$\tau^{\mathrm{ref}}$', '$\tau$','Interpreter','latex','Location','east');
+xlim([0 Tmax]);
+% ylim([-2.5 2.5]);
+
+subplot(6,1,2);
+% Plot forces
+hold on;
+plot(time, squeeze(sig_val.fx_ref), 'LineStyle', '--', 'Color', 'r', 'LineWidth', lw);
+plot(time, squeeze(sig_val.fx), 'Color', 'r', 'LineWidth', lw);
+plot(time, squeeze(sig_val.fy_ref), 'LineStyle', '--', 'Color', 'g', 'LineWidth', lw);
+plot(time, squeeze(sig_val.fy), 'Color', 'g', 'LineWidth', lw);
+xlabel('Time [s]','Interpreter','latex');
+ylabel('$F_{\mathrm{x}}$, $F_{\mathrm{y}}$ (N)','Interpreter','latex');
+legend('$F_\mathrm{x}^\mathrm{ref}$','$F_{\mathrm{x}}$','$F_\mathrm{y}^\mathrm{ref}$','$F_{\mathrm{y}}$','Interpreter','latex','Location','east');
+xlim([0 Tmax]);
+% ylim([-2.5 2.5]);
+
+% Plot torque current
+subplot(6,1,3);
+hold on;
+% plot(time, squeeze(sig_val.id_ref), 'Color', [231/255, 143/255, 106/255], 'LineWidth', lw);
+plot(time, squeeze(sig_val.iq_ref), 'LineStyle', '--', 'Color', 'b', 'LineWidth', lw);
+% plot(time, squeeze(sig_val.id), 'Color', [136/255, 62/255, 150/255], 'LineWidth', lw);
+plot(time, squeeze(sig_val.iq), 'Color', 'b', 'LineWidth', lw);
+xlabel('Time [s]','Interpreter','latex');
+ylabel('$\vec{i}_\mathrm{t}^{\,\, \rm T}$ (A)','Interpreter','latex');
+legend('$i_\mathrm{q}^\mathrm{ref}$','$i_\mathrm{q}$','Interpreter','latex','Location','east');
+xlim([0 Tmax]);
+% ylim([-2.5 2.5]);
+
+% Plot suspension current
+subplot(6,1,4);
+hold on;
+plot(time, squeeze(sig_val.ix_ref), 'LineStyle', '--', 'Color', 'r', 'LineWidth', lw);
+plot(time, squeeze(sig_val.ix), 'Color', 'r', 'LineWidth', lw);
+plot(time, squeeze(sig_val.iy_ref), 'LineStyle', '--', 'Color', 'g', 'LineWidth', lw);
+plot(time, squeeze(sig_val.iy), 'Color', 'g', 'LineWidth', lw);
+xlabel('Time [s]','Interpreter','latex');
+ylabel('$\vec{i}_\mathrm{s}^{\,\, \rm S}$ (A)','Interpreter','latex');
+legend('$i_\mathrm{x}^\mathrm{ref}$', '$i_\mathrm{x}$', '$i_\mathrm{y}^\mathrm{ref}$', '$i_\mathrm{y}$','Interpreter','latex','Location','east');
+xlim([0 Tmax]);
+% ylim([-2.5 2.5]);
+
+% Plot terminal current
+subplot(6,1,5);
+hold on;
+colors = lines(6); % Generate 6 types of colors        
+colors(1,:) = [0 0 1];
+colors(4,:) = [1 0 0];
+for i = [1, 4] % Columns 1-6 contain current data
     plot(time, squeeze(sig_val.i_term(:,i)), 'Color', colors(i,:), 'LineWidth', lw);
 end
 xlabel('Time [s]','Interpreter','latex');
-ylabel('Terminal current (A)','Interpreter','latex');
-legend('Term 1','Term 2','Term 3','Term 4','Term 5','Term 6','Interpreter','latex','Location','east');
-xlim([0 Tend]);
+ylabel('$\mathbf{i}_{\mathrm{term}}$ (A)','Interpreter','latex');
+legend('$I_{u}$','$I_{u^\prime}$','Interpreter','latex','Location','east');
+xlim([0 Tmax]);
 % ylim([-2.5 2.5]);
 
-% Plot back-emf
-subplot(3,2,2);
-% Plot phase voltage
+% Plot terminal voltage
+subplot(6,1,6);
 hold on;
-for i = 1:6 % Columns 1-6 contain current data
+for i = [1, 4] % Columns 1-6 contain current data
     plot(time, squeeze(sig_val.v_term(i,:)), 'Color', colors(i,:), 'LineWidth', lw);
 end
-xlabel('Time [s]','Interpreter','latex');
-ylabel('Terminal voltage (V)','Interpreter','latex');
-legend('Term 1','Term 2','Term 3','Term 4','Term 5','Term 6','Interpreter','latex','Location','east');
-xlim([0 Tend]);
-% ylim([-2.5 2.5]);
-
-% Plot torque and force
-subplot(3,2,3);
-hold on;
-plot(time, squeeze(sig_val.id_ref), 'Color', [231/255, 143/255, 106/255], 'LineWidth', lw);
-plot(time, squeeze(sig_val.iq_ref), 'Color', [0/255, 108/255, 186/255], 'LineWidth', lw);
-plot(time, squeeze(sig_val.id), 'Color', [136/255, 62/255, 150/255], 'LineWidth', lw);
-plot(time, squeeze(sig_val.iq), 'Color', [237/255, 170/255, 33/255], 'LineWidth', lw);
-xlabel('Time [s]','Interpreter','latex');
-ylabel('Torque current (A)','Interpreter','latex');
-legend('$i_d^*$', '$i_q^*$', '$i_d$', '$i_q$','Interpreter','latex','Location','east');
-xlim([0 Tend]);
-% ylim([-2.5 2.5]);
-
-subplot(3,2,4);
-hold on;
-plot(time, squeeze(sig_val.ix_ref), 'Color', [231/255, 143/255, 106/255], 'LineWidth', lw);
-plot(time, squeeze(sig_val.iy_ref), 'Color', [0/255, 108/255, 186/255], 'LineWidth', lw);
-plot(time, squeeze(sig_val.ix), 'Color', [136/255, 62/255, 150/255], 'LineWidth', lw);
-plot(time, squeeze(sig_val.iy), 'Color', [237/255, 170/255, 33/255], 'LineWidth', lw);
-xlabel('Time [s]','Interpreter','latex');
-ylabel('Suspension current (A)','Interpreter','latex');
-legend('$i_x^*$', '$i_y^*$', '$i_x$', '$i_y$','Interpreter','latex','Location','east');
-xlim([0 Tend]);
-% ylim([-2.5 2.5]);
-
-subplot(3,2,5);
-hold on;
-plot(time, squeeze(sig_val.torque), 'Color', 'k', 'LineWidth', lw);
-xlabel('Time [s]','Interpreter','latex');
-ylabel('Torque (Nm)','Interpreter','latex');
-legend('Torque','Interpreter','latex','Location','east');
-xlim([0 Tend]);
-% ylim([-2.5 2.5]);
-
-subplot(3,2,6);
-hold on;
-plot(time, squeeze(sig_val.fx), 'Color', 'r', 'LineWidth', lw);
-plot(time, squeeze(sig_val.fy), 'Color', 'b', 'LineWidth', lw);
-xlabel('Time [s]','Interpreter','latex');
-ylabel('Force (N)','Interpreter','latex');
-legend('$f_x$','$f_y$','Interpreter','latex','Location','east');
-xlim([0 Tend]);
+xlabel('Time (ms)','Interpreter','latex');
+ylabel('$\mathbf{v}_{\mathrm{term}}$ (V)','Interpreter','latex');
+legend('$v_{u}$','$v_{u^\prime}$','Interpreter','latex','Location','east');
+xlim([0 Tmax]);
 % ylim([-2.5 2.5]);
 
 set(findall(gcf, '-property', 'FontName'), 'FontName', 'Times New Roman');
 
 set(figure1,'Units','inches','Position',[(Inch_SS(3)-width)/2 (Inch_SS(4)-height)/2 width height]);
-print(figure1, '-dsvg','-noui','plot_results');
-print(figure1, '-dpng','-r300','plot_results');
-
-%% save data
-
-% data.time = time;
-% data.i_term1 = squeeze(sig_val.i_term(:,1));
-% data.i_term4 = squeeze(sig_val.i_term(:,4));
-% data.v_term1 = squeeze(sig_val.v_term(1,:)).';
-% data.v_term4 = squeeze(sig_val.v_term(4,:)).';
-% data.iq_cmd = squeeze(sig_val.iq_cmd);
-% data.iq = squeeze(sig_val.iq);
-% data.ix_cmd = squeeze(sig_val.ix_cmd);
-% data.ix = squeeze(sig_val.ix);
-% data.iy_cmd = squeeze(sig_val.iy_cmd);
-% data.iy = squeeze(sig_val.iy);
-% data.fx_cmd = squeeze(sig_val.fx_cmd);
-% data.fx = squeeze(sig_val.fx);
-% data.fy_cmd = squeeze(sig_val.fy_cmd);
-% data.fy = squeeze(sig_val.fy);
-% data.torque_cmd = squeeze(sig_val.torque_cmd);
-% data.torque = squeeze(sig_val.torque);
-% 
-% data_table = table(data.time, data.i_term1, data.i_term4, data.v_term1, data.v_term4, ...
-%     data.iq_cmd, data.iq, data.ix_cmd, data.ix, data.iy_cmd, data.iy, data.fx_cmd, data.fx, data.fy_cmd, data.fy,data.torque_cmd, data.torque);
-% data_table.Properties.VariableNames = {'time', 'i_term1', 'i_term4', 'v_term1', 'v_term4', ...
-%     'iq_cmd', 'iq', 'ix_cmd', 'ix', 'iy_cmd', 'iy', 'fx_cmd', 'fx', 'fy_cmd', 'fy', 'torque_cmd', 'torque'};
-% 
-% file_name = sprintf('../../../Publication/ISMB2025/full-paper/imaegs/simulink-results/%s_%s.csv', winding_configuration, conf);
-% writetable(data_table, file_name);
