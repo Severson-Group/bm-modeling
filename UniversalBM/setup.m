@@ -18,29 +18,29 @@ winding_conf_dic = dictionary("Separate", 1, ...
                               "MCI", 6);
 winding_conf_num = winding_conf_dic(winding_configuration);
 
-Tend = 0.03; % Simulation stop time
-Tsim = 1e-5; % Simulation sampling time
+Tend = 0.03; % Simulation stop time (s)
+Tsim = 1e-5; % Simulation sampling time (s)
 V_DC = 160; % DC bus (V)
 
-torque_cmd = 0.2; % Torque reference (Nm)
+torque_ref = 0.2; % Torque reference (Nm)
 torque_start = (1/6)*Tend; % Torque start time (s)
 torque_end = (4/6)*Tend; % Torque end time (s)
 
-fx_cmd = 9; % fx force reference (N)
+fx_ref = 9; % fx force reference (N)
 fx_start = 0; % x-axis force start time (s)
 fx_end = (2/6)*Tend; % x-axis force end time (s)
-fy_cmd = 9; % fy force reference (N)
+fy_ref = 9; % fy force reference (N)
 fy_start = (3/6)*Tend; % y-axis force start time (s)
 fy_end = (5/6)*Tend; % y-axis force end time (s)
 
-id_cmd = 0; % id current reference (A)
+id_ref = 0; % id current reference (A)
 id_start = 0; % d-axis current start time (s)
 id_end = 0.025; % d-axis current end time (s)
 
 rotor_unbalance_weight = 1; % (kg)
 rotor_unbalance_pos = 0; % epsilon (m)
 
-speed_cmd = 7500; % Speed command (r/min)
+speed_ref = 7500; % Speed command (r/min)
 
 %% Plant parameters
 p = 4; % Number of torque pole-pair
@@ -58,7 +58,7 @@ Lt = 300e-6; % Self-inductance of torque system without leakage
 Ls = 450e-6; % Self-inductance of suspension system without leakage
 Llkg = 0.01*Lt;
 
-% calculate Generalized Clarke Transform
+% Calculate Generalized Clarke Transform
 Cm = 2/m;
 Cr = Cm*[cos(0*alpha_t) cos(1*alpha_t) cos(2*alpha_t) cos(3*alpha_t) cos(4*alpha_t) cos(5*alpha_t);
          sin(0*alpha_t) sin(1*alpha_t) sin(2*alpha_t) sin(3*alpha_t) sin(4*alpha_t) sin(5*alpha_t);
@@ -268,8 +268,8 @@ out = sim('BearinglessMotorSimulation.slx');
 runObj = Simulink.sdi.Run.getLatest;
 
 % List of variables to extract
-obj2ext = {'time','vd','vq','id_cmd','iq_cmd','id','iq','torque_cmd','torque', ...
-                  'vx','vy','ix_cmd','iy_cmd','ix','iy','fx_cmd','fy_cmd','fx','fy', ...
+obj2ext = {'time','vd','vq','id_ref','iq_ref','id','iq','torque_ref','torque', ...
+                  'vx','vy','ix_ref','iy_ref','ix','iy','fx_ref','fy_ref','fx','fy', ...
                   'i_term', 'v_term', ...
                   'EMF_1', 'EMF_2', 'EMF_3', 'EMF_4', 'EMF_5', 'EMF_6'};
 
@@ -319,8 +319,8 @@ xlim([0 Tend]);
 % Plot torque and force
 subplot(3,2,3);
 hold on;
-plot(time, squeeze(sig_val.id_cmd), 'Color', [231/255, 143/255, 106/255], 'LineWidth', lw);
-plot(time, squeeze(sig_val.iq_cmd), 'Color', [0/255, 108/255, 186/255], 'LineWidth', lw);
+plot(time, squeeze(sig_val.id_ref), 'Color', [231/255, 143/255, 106/255], 'LineWidth', lw);
+plot(time, squeeze(sig_val.iq_ref), 'Color', [0/255, 108/255, 186/255], 'LineWidth', lw);
 plot(time, squeeze(sig_val.id), 'Color', [136/255, 62/255, 150/255], 'LineWidth', lw);
 plot(time, squeeze(sig_val.iq), 'Color', [237/255, 170/255, 33/255], 'LineWidth', lw);
 xlabel('Time [s]','Interpreter','latex');
@@ -331,8 +331,8 @@ xlim([0 Tend]);
 
 subplot(3,2,4);
 hold on;
-plot(time, squeeze(sig_val.ix_cmd), 'Color', [231/255, 143/255, 106/255], 'LineWidth', lw);
-plot(time, squeeze(sig_val.iy_cmd), 'Color', [0/255, 108/255, 186/255], 'LineWidth', lw);
+plot(time, squeeze(sig_val.ix_ref), 'Color', [231/255, 143/255, 106/255], 'LineWidth', lw);
+plot(time, squeeze(sig_val.iy_ref), 'Color', [0/255, 108/255, 186/255], 'LineWidth', lw);
 plot(time, squeeze(sig_val.ix), 'Color', [136/255, 62/255, 150/255], 'LineWidth', lw);
 plot(time, squeeze(sig_val.iy), 'Color', [237/255, 170/255, 33/255], 'LineWidth', lw);
 xlabel('Time [s]','Interpreter','latex');
