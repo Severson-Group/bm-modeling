@@ -8,7 +8,7 @@ load_system("Plant")
 load_system("Controller")
 % The input of this function should be 'Separate', 'MP', 'Bridge',
 % 'Parallel', or 'MCI'
-winding_configuration = "MCI";
+winding_configuration = "MP";
 
 winding_conf_dic = dictionary("Separate", 1, ...
                               "MP", 2, ...
@@ -22,9 +22,9 @@ Tend = 0.03; % Simulation stop time (s)
 Tsim = 1e-5; % Simulation sampling time (s)
 V_DC = 160; % DC bus (V)
 
-torque_ref = 0.2; % Torque reference (Nm)
-torque_start = (1/6)*Tend; % Torque start time (s)
-torque_end = (4/6)*Tend; % Torque end time (s)
+tau_ref = 0.2; % Torque reference (Nm)
+tau_start = (1/6)*Tend; % Torque start time (s)
+tau_end = (4/6)*Tend; % Torque end time (s)
 
 fx_ref = 9; % fx force reference (N)
 fx_start = 0; % x-axis force start time (s)
@@ -268,7 +268,7 @@ out = sim('BearinglessMotorSimulation.slx');
 runObj = Simulink.sdi.Run.getLatest;
 
 % List of variables to extract
-obj2ext = {'time','vd','vq','id_ref','iq_ref','id','iq','torque_ref','torque', ...
+obj2ext = {'time','vd','vq','id_ref','iq_ref','id','iq','tau_ref','tau', ...
                   'vx','vy','ix_ref','iy_ref','ix','iy','fx_ref','fy_ref','fx','fy', ...
                   'i_term', 'v_term', ...
                   'EMF_1', 'EMF_2', 'EMF_3', 'EMF_4', 'EMF_5', 'EMF_6'};
@@ -295,8 +295,8 @@ figure1 = figure;
 % Plot torque
 subplot(6,1,1);
 hold on;
-plot(time, squeeze(sig_val.torque_ref), 'LineStyle', '--', 'Color', 'b', 'LineWidth', lw);
-plot(time, squeeze(sig_val.torque), 'Color', 'b', 'LineWidth', lw);
+plot(time, squeeze(sig_val.tau_ref), 'LineStyle', '--', 'Color', 'b', 'LineWidth', lw);
+plot(time, squeeze(sig_val.tau), 'Color', 'b', 'LineWidth', lw);
 xlabel('Time [s]','Interpreter','latex');
 ylabel('$\tau$ (Nm)','Interpreter','latex');
 legend('$\tau^{\mathrm{ref}}$', '$\tau$','Interpreter','latex','Location','east');
