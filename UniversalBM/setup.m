@@ -1,3 +1,18 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This the main script that contains universal bearingless motor model. 
+% The MATLAB/Simulink files available in open-source Github repository:
+% https://github.com/Severson-Group/bm-modeling
+% 
+% This setup.m can reproduce the Simulink simulation results
+% presented in Fig. 6 of the following publication:
+%
+% Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, 
+% Wolfgang GRUBER and Eric L. SEVERSON, 
+% "Model and Control Framework for Bearingless Motors with Combined Windings"
+% 19th International Symposium on Magnetic Bearings (ISMB19), 2025. 
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 clear
 close all
 addpath(genpath(pwd))
@@ -8,7 +23,7 @@ load_system("Plant")
 load_system("Controller")
 % The input of this function should be 'Separate', 'MP', 'Bridge',
 % 'Parallel', or 'MCI'
-winding_configuration = "MP";
+winding_configuration = "MCI";
 
 winding_conf_dic = dictionary("Separate", 1, ...
                               "MP", 2, ...
@@ -37,18 +52,35 @@ id_ref = 0; % id current reference (A)
 id_start = 0; % d-axis current start time (s)
 id_end = 0.025; % d-axis current end time (s)
 
-rotor_unbalance_weight = 1; % (kg)
-rotor_unbalance_pos = 0; % epsilon (m)
-
 speed_ref = 7500; % Speed command (r/min)
 
-%% Plant parameters
+%% 2. Multiphase combined winding bearingless motor model (see Section 2)
+% 2.1 Airgap field calculations
 p = 4; % Number of torque pole-pair
 ps = 5; % Number of suspension pole-pair
 
 m = 6;  % Number of phase
-alpha_t = wrapToPi(2*pi/m*p);
-alpha_s = wrapToPi(2*pi/m*ps);
+alpha_t = wrapToPi(2*pi/m*p); % See Eq. (2)
+alpha_s = wrapToPi(2*pi/m*ps); % See Eq. (2)
+
+% 2.2 Force and torque model
+kt = 0.02; % Torque constant (Nm/Apk) (see Eq. (6))
+kf = 1.8; % Force constant (N/Apk) (see Eq. (6))
+
+tau_hat = 2/m*kt;
+
+Fx_hat = 2/m*kf;
+if ps > p % ps = p + 1
+    Kis = 1;
+    conf = 'p+1';
+elseif ps < p % ps = p - 1
+    Kis = -1;
+    conf = 'p-1';
+end
+Fy_hat = -Kis * 2/m*kf;
+
+% 2.3. Electric model
+lambda_pm = 0.00667;  % back-emf constant (Vpk/(mech rad/s)) (see Eq. (7))
 
 R = 0.3; % Phase resistance (Ohm)
 Rmat = R*eye(6, 6);
@@ -67,7 +99,7 @@ Cr = Cm*[cos(0*alpha_t) cos(1*alpha_t) cos(2*alpha_t) cos(3*alpha_t) cos(4*alpha
          1 1 1 1 1 1;
          1 -1 1 -1 1 -1;];
 
-% Calculate Lmat for MP configuration
+% Calculate Lmat for MP configuration (see Eq. (9))
 Lmat = 2/m*[Lt+Ls                               Lt*cos(alpha_t)+Ls*cos(alpha_s)     Lt*cos(2*alpha_t)+Ls*cos(2*alpha_s) Lt*cos(3*alpha_t)+Ls*cos(3*alpha_s) Lt*cos(4*alpha_t)+Ls*cos(4*alpha_s) Lt*cos(5*alpha_t)+Ls*cos(5*alpha_s);
             Lt*cos(alpha_t)+Ls*cos(alpha_s)     Lt+Ls                               Lt*cos(alpha_t)+Ls*cos(alpha_s)     Lt*cos(2*alpha_t)+Ls*cos(2*alpha_s) Lt*cos(3*alpha_t)+Ls*cos(3*alpha_s) Lt*cos(4*alpha_t)+Ls*cos(4*alpha_s);
             Lt*cos(2*alpha_t)+Ls*cos(2*alpha_s) Lt*cos(alpha_t)+Ls*cos(alpha_s)     Lt+Ls                               Lt*cos(alpha_t)+Ls*cos(alpha_s)     Lt*cos(2*alpha_t)+Ls*cos(2*alpha_s) Lt*cos(3*alpha_t)+Ls*cos(3*alpha_s);
@@ -81,6 +113,12 @@ L_alpha_beta = Cr*Lmat/Cr;
 Lt = L_alpha_beta(1,1);
 Ls = L_alpha_beta(3,3);
 
+
+
+%% 3. Proposed universal model (see Section 3)
+% 3.2 Proposed universal bearingless motor model
+
+% Mapping matrices (see Table 4)
 epsilon = 1e-2;
 if (abs(alpha_t - pi/3) < epsilon && abs(alpha_s - 2*pi/3) < epsilon) % case 1
     map_case = [-4 1 -6 3 -2 5];
@@ -92,26 +130,8 @@ elseif (abs(alpha_t + 2*pi/3) < epsilon && abs(alpha_s + pi/3) < epsilon) % case
     map_case = [4 1 6 3 2 5];
 end
 
-%% Machine constants
-lambda_pm = 0.00667;  % back-emf constant (Vpk/(mech rad/s))
-% Ke = 0;  % back-emf constant (Vpk/(mech rad/s))
-kt = 0.02; % Torque constant (Nm/Apk)
-kf = 1.8; % Force constant (N/Apk)
-
-tau_hat = 2/m*kt;
-
-Fx_hat = 2/m*kf;
-if ps > p % ps = p + 1
-    Kis = 1;
-    conf = 'p+1';
-elseif ps < p % ps = p - 1
-    Kis = -1;
-    conf = 'p-1';
-end
-Fy_hat = -Kis * 2/m*kf;
-
+% Voltage and current, coil-group to phase transformation matrices (see Table 3)
 switch(winding_configuration)
-
     case "MP"
         T_ph_term_v = eye(m,m);
         T_mp_term_v = eye(m,m);
@@ -250,7 +270,7 @@ end
 Fsw = 88000; % Inverter switching frequency (Hz)
 Tsw = 1/Fsw; % Inverter switching period (sec)
 
-%% Controller
+%% 4. Universal force and torque controller (see Section 4)
 fb = 500; % Bandwidth (Hz)
 wb = 2*pi*fb; % Bandwidth (rad/s)
 
