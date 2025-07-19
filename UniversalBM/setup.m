@@ -95,12 +95,12 @@ end
 %% Machine constants
 lambda_pm = 0.00667;  % back-emf constant (Vpk/(mech rad/s))
 % Ke = 0;  % back-emf constant (Vpk/(mech rad/s))
-Kt = 0.02; % Torque constant (Nm/Apk)
-Kf = 1.8; % Force constant (N/Apk)
+kt = 0.02; % Torque constant (Nm/Apk)
+kf = 1.8; % Force constant (N/Apk)
 
-tau_hat = 2/m*Kt;
+tau_hat = 2/m*kt;
 
-Fx_hat = 2/m*Kf;
+Fx_hat = 2/m*kf;
 if ps > p % ps = p + 1
     Kis = 1;
     conf = 'p+1';
@@ -108,7 +108,7 @@ elseif ps < p % ps = p - 1
     Kis = -1;
     conf = 'p-1';
 end
-Fy_hat = -Kis * 2/m*Kf;
+Fy_hat = -Kis * 2/m*kf;
 
 switch(winding_configuration)
 
