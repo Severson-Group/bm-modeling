@@ -80,7 +80,7 @@ end
 Fy_hat = -Kis * 2/m*kf;
 
 % 2.3. Electric model
-lambda_pm = 0.00667;  % back-emf constant (Vpk/(mech rad/s)) (see Eq. (7))
+ke = 0.00667;  % back-emf constant (Vpk/(mech rad/s)) (see Eq. (7))
 
 R = 0.3; % Phase resistance (Ohm)
 Rmat = R*eye(6, 6);
