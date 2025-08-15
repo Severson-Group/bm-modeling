@@ -1,9 +1,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This the main script that contains universal bearingless motor model. 
-% The MATLAB/Simulink files available in open-source Github repository:
+% This is the main script that contains universal bearingless motor model. 
+% The MATLAB/Simulink files are available in open-source Github repository:
 % https://github.com/Severson-Group/bm-modeling
 % 
-% This setup.m can reproduce the Simulink simulation results
+% Run this setup.m to reproduce the Simulink simulation results
 % presented in Fig. 6 of the following publication:
 %
 % Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, 
@@ -17,12 +17,14 @@ clear
 close all
 addpath(genpath(pwd))
 
-%% Switch winding that you develop
 load_system('BearinglessMotorSimulation') % load Simulink model
 load_system("Plant")
 load_system("Controller")
-% The input of this function should be 'Separate', 'MP', 'Bridge',
-% 'Parallel', or 'MCI'
+
+%% Specify winding to simulate
+% Update winding_configuration to be 'Separate', 'MP', 'MP2', 'Bridge',
+% 'Parallel', or 'MCI' to indicate the type of winding to simulate (see 
+% Fig. 2) 
 winding_configuration = "MCI";
 
 winding_conf_dic = dictionary("Separate", 1, ...
@@ -33,9 +35,9 @@ winding_conf_dic = dictionary("Separate", 1, ...
                               "MCI", 6);
 winding_conf_num = winding_conf_dic(winding_configuration);
 
+%% Specify simulation parameters
 Tend = 0.03; % Simulation stop time (s)
 Tsim = 1e-5; % Simulation sampling time (s)
-V_DC = 160; % DC bus (V)
 
 tau_ref = 0.2; % Torque reference (Nm)
 tau_start = (1/6)*Tend; % Torque start time (s)
@@ -52,14 +54,24 @@ id_ref = 0; % id current reference (A)
 id_start = 0; % d-axis current start time (s)
 id_end = 0.025; % d-axis current end time (s)
 
-speed_ref = 7500; % Speed command (r/min)
+%% Power electronics
+V_DC = 160; % DC bus (V)
+Fsw = 88000; % Inverter switching frequency (Hz)
+Tsw = 1/Fsw; % Inverter switching period (sec)
+if winding_conf_num ~= winding_conf_dic("Bridge") 
+    V_SAT = V_DC/2; % Assume sine-triangle PWM
+else
+    V_SAT = V_DC; % Single phase inverter saturates at the DC bus
+end
+
+speed_ref = 7500; % Shaft speed (r/min)
 
 %% 2. Multiphase combined winding bearingless motor model (see Section 2)
 % 2.1 Airgap field calculations
-p = 4; % Number of torque pole-pair
-ps = 5; % Number of suspension pole-pair
+p = 4; % Number of torque pole-pairs
+ps = 5; % Number of suspension pole-pairs
 
-m = 6;  % Number of phase
+m = 6;  % Number of phases
 alpha_t = wrapToPi(2*pi/m*p); % See Eq. (2)
 alpha_s = wrapToPi(2*pi/m*ps); % See Eq. (2)
 
@@ -68,8 +80,8 @@ kt = 0.02; % Torque constant (Nm/Apk) (see Eq. (6))
 kf = 1.8; % Force constant (N/Apk) (see Eq. (6))
 
 tau_hat = 2/m*kt;
-
 Fx_hat = 2/m*kf;
+
 if ps > p % ps = p + 1
     Kis = 1;
     conf = 'p+1';
@@ -85,12 +97,12 @@ ke = 0.00667;  % back-emf constant (Vpk/(mech rad/s)) (see Eq. (7))
 R = 0.3; % Phase resistance (Ohm)
 Rmat = R*eye(6, 6);
 
-% Leakage inductance 1%
 Lt = 300e-6; % Self-inductance of torque system without leakage
 Ls = 450e-6; % Self-inductance of suspension system without leakage
-Llkg = 0.01*Lt;
+Llkg = 0.01*Lt; % Assume leakage inductance is 1% (needed so that L matrix 
+% is non-singular)
 
-% Calculate Generalized Clarke Transform
+% Calculate Generalized Clarke Transform (see Eq. (10))
 Cm = 2/m;
 Cr = Cm*[cos(0*alpha_t) cos(1*alpha_t) cos(2*alpha_t) cos(3*alpha_t) cos(4*alpha_t) cos(5*alpha_t);
          sin(0*alpha_t) sin(1*alpha_t) sin(2*alpha_t) sin(3*alpha_t) sin(4*alpha_t) sin(5*alpha_t);
@@ -265,10 +277,6 @@ switch(winding_configuration)
         Fx_hat = 2*Fx_hat;
         Fy_hat = 2*Fy_hat;
 end
-
-%% Power electronics
-Fsw = 88000; % Inverter switching frequency (Hz)
-Tsw = 1/Fsw; % Inverter switching period (sec)
 
 %% 4. Universal force and torque controller (see Section 4)
 fb = 500; % Bandwidth (Hz)
