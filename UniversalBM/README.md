@@ -1,8 +1,8 @@
-# Universal Bearingless Motor Model
+# Universal Bearingless Motor Model and Controller
 
 ## Introduction
 
-This simulation package includes all the necessary files to simulate the universal bearingless motor model. This model was developed based on the following publication:
+This simulation package includes all the necessary files to simulate any bearingless motor with a combined winding. The model was developed in the following publication and includes both a universal controller and plant:
 
 ```markdown
 Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, Wolfgang GRUBER and Eric L. SEVERSON,
@@ -11,16 +11,20 @@ Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, Wolfgang GRUB
 ```
 
 ### [`setup.m`](setup.m)
+
 Main script to define machine parameters and run the Simulink simulation.
 
 ### [`BearinglessMotorSimulation.slx`](BearinglessMotorSimulation.slx)
+
 Top level Simulink model that integrates both the universal model and the controller.
 
 ### [`Plant.slx`](Plant.slx)
-The universal bearingless motor model (plant), corresponds to Fig. 3 in the paper.
+
+The universal bearingless motor model (plant). This corresponds to Fig. 3 in the paper.
 
 ### [`Controller.slx`](Controller.slx)
-The universal force and torque controller, corresponds to Fig. 4 in the paper.
+
+The universal force and torque controller. This corresponds to Fig. 4 in the paper.
 
 ## Simulation
 
