@@ -10,10 +10,10 @@ Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, Wolfgang GRUB
 19th International Symposium on Magnetic Bearings (ISMB19), 2025.
 ```
 
-## [`setup.m`](setup.m)
+### [`setup.m`](setup.m)
 Main script to define machine parameters and run the Simulink simulation.
 
-## [`BearinglessMotorSimulation.slx`](BearinglessMotorSimulation.slx)
+### [`BearinglessMotorSimulation.slx`](BearinglessMotorSimulation.slx)
 Top level Simulink model that integrates both the universal model and the controller.
 
 ### [`Plant.slx`](Plant.slx)
@@ -26,9 +26,9 @@ The universal force and torque controller, corresponds to Fig. 4 in the paper.
 
 To run the simulation:
 
-1. Open [`setup.m`](setup.m)
+1. Open [`setup.m`](setup.m).
 2. Specify the desired winding configuration (e.g., MCI) as follows:
-  something
+   https://github.com/Severson-Group/bm-modeling/blob/ed2de350966ff855ba44755b870dd4060cbec2dd/UniversalBM/setup.m#L24-L26
 3. Run [`setup.m`](setup.m). 
   This will reproduce the Simulink simulation results presented in Fig. 6, as follows:
 
