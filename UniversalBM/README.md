@@ -1,27 +1,39 @@
-# BM Modeling
-
-**Modeling of bearingless motors via simulation.**
+# Universal Bearingless Motor Model
 
 ## Introduction
 
-This simulation package includes all the needed files to simulate the BP1 prototype bearingless motor. The Simulink files include a stand-alone simulation which includes both the plant model and a discrete-time controller. Both models are protected so they act as black boxes.
+This simulation package includes all the necessary files to simulate the universal bearingless motor model. This model was developed based on the following publication:
+
+```markdown
+Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, Wolfgang GRUBER and Eric L. SEVERSON,
+"Model and Control Framework for Bearingless Motors with Combined Windings"
+19th International Symposium on Magnetic Bearings (ISMB19), 2025.
+```
+
+## [`setup.m`](setup.m)
+Main script to define machine parameters and run the Simulink simulation.
+
+## [`BearinglessMotorSimulation.slx`](BearinglessMotorSimulation.slx)
+Top level Simulink model that integrates both the universal model and the controller.
+
+### [`Plant.slx`](Plant.slx)
+The universal bearingless motor model (plant), corresponds to Fig. 3 in the paper.
+
+### [`Controller.slx`](Controller.slx)
+The universal force and torque controller, corresponds to Fig. 4 in the paper.
 
 ## Simulation
 
-In the simulation file "TOP_LEVEL_SIM", the prototype machine starts at rest. First, the lift-off event occurs where the rotor is commanded to the center of the airgap, resulting in large suspension forces for a small time. After it is stably levitating, the rotor speed is accelerated to 100kRPM over one second.
+To run the simulation:
 
-<img src="./images/simulink_top_level.png" />
+1. Open [`setup.m`](setup.m)
+2. Specify the desired winding configuration (e.g., MCI) as follows:
+  something
+3. Run [`setup.m`](setup.m). 
+  This will reproduce the Simulink simulation results presented in Fig. 6, as follows:
 
-The machine plant model includes force disturbances which model both rotor weight and rotor imbalance. The controller is implemented in discrete-time and runs every 1/20000 sec. The plant provides disturbance inputs which can be used to further verify the performance of the controller. Example disturbances are included in the Simulink file, but are disabled by default.
+| **Multiphase** | **Bridge DPNV** | **Parallel DPNV** | **MCI** |
+|:-:|:-:|:-:|:-:|
+| <img src=images/mp.svg width=300> | <img src=images/bridge.svg width=300> | <img src=images/parallel.svg width=300> | <img src=images/mci.svg width=300> |
 
-## Viewing Signals
-
-The simulation signals can be easily viewed by loading the Simulink Data Inspector tool.
-
-<img src="./images/simulink_open_view.png" width="50%" />
-
-In this tool, load the included saved perspective "system_view.mldatx" file to see all the system signals. The default simulation output is shown below.
-
-<img src="./images/simulink_signals.png" />
-
-*Note: the Simulink files were created using R2019b; only the R2019b version can be used for running the models.*
+*Note: the Simulink files were created using MATLAB R2024b.*
