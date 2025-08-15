@@ -1,13 +1,15 @@
+
 # BM Modeling
 
 ## Introduction
 
-This repository houses bearingless motor control models developed by the eLev lab and its collaborators, made freely available.
+This repository houses shared bearingless motor control models developed by the [eLev Lab](https://elev.umn.edu/) and its collaborators.
 
 ## Folder Configuration
 
 ### [`UniversalBM`](./UniversalBM/)
-This simulation package includes all the necessary files to simulate the universal bearingless motor model. This model was developed based on the following publication:
+
+This simulation package includes all necessary files to simulate any bearingless motor with a combined winding. This model was developed in the following publication:
 
 ```markdown
 Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, Wolfgang GRUBER and Eric L. SEVERSON,
@@ -16,10 +18,13 @@ Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, Wolfgang GRUB
 ```
 
 ## [`MP`](./MP/)
-This folder contains Simulink files for multiphase only, along with the implementation of a system identification.
+
+This folder contains Simulink files for multiphase combined windings as well as an example implementation of system identification techniques.
 
 ## [`PMSM`](./PMSM/)
-This folder contains Simulink files for simulating current regulation of a normal motor.
+
+This folder contains Simulink files for simulating current regulation of a standard three phase motor.
 
 ### [`prototypes`](./prototypes/)
-This folder contains the Simulink model used to control bearingless motor prototypes in eLev lab.
+
+This folder contains the Simulink model used to control bearingless motor prototypes in the [eLev Lab](https://elev.umn.edu/).
