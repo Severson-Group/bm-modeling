@@ -25,7 +25,7 @@ load_system("Controller")
 % Update winding_configuration to be 'Separate', 'MP', 'MP2', 'Bridge',
 % 'Parallel', or 'MCI' to indicate the type of winding to simulate (see 
 % Fig. 2) 
-winding_configuration = "MP";
+winding_configuration = "MCI";
 
 winding_conf_dic = dictionary("Separate", 1, ...
                               "MP", 2, ...
