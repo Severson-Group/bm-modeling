@@ -408,5 +408,5 @@ if ~isfolder(imageDir)
     mkdir(imageDir);
 end
 
-filename = fullfile(imageDir,sprintf('%s_ismb_19.svg', winding_configuration));
+filename = fullfile(imageDir,sprintf('%s-ismb-19.svg', lower(winding_configuration)));
 exportgraphics(figure1, filename, 'ContentType', 'vector');
