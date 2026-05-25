@@ -9,12 +9,20 @@ This repository houses shared bearingless motor control models developed by the 
 
 ### [`UniversalBM`](./UniversalBM/)
 
-This simulation package includes all necessary files to simulate any bearingless motor with a combined winding. This model was developed in the following publication:
+This simulation package includes all the necessary files to simulate any bearingless motor with a combined winding. The model was originally developed in the following publication:
 
 ```markdown
 Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, Wolfgang GRUBER and Eric L. SEVERSON,
 "Model and Control Framework for Bearingless Motors with Combined Windings"
 19th International Symposium on Magnetic Bearings (ISMB19), 2025.
+```
+
+The machine parameters were subsequently updated and published in the following publication:
+
+```markdown
+Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, David Prinz, Wolfgang GRUBER and Eric L. SEVERSON,
+"Universal Model and Control Framework for Bearingless Motors with Combined Windings"
+Actuator Journal, 2026.
 ```
 
 ## [`MP`](./MP/)
