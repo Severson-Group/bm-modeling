@@ -25,7 +25,7 @@ load_system("Controller")
 % Update winding_configuration to be 'Separate', 'MP', 'MP2', 'Bridge',
 % 'Parallel', or 'MCI' to indicate the type of winding to simulate (see 
 % Fig. 2) 
-winding_configuration = "MCI";
+winding_configuration = "MP";
 
 winding_conf_dic = dictionary("Separate", 1, ...
                               "MP", 2, ...
@@ -400,3 +400,13 @@ xlim([0 Tmax]);
 set(findall(gcf, '-property', 'FontName'), 'FontName', 'Times New Roman');
 
 set(figure1,'Units','inches','Position',[(Inch_SS(3)-width)/2 (Inch_SS(4)-height)/2 width height]);
+
+scriptDir = fileparts(mfilename('fullpath'));
+imageDir = fullfile(scriptDir, 'images');
+
+if ~isfolder(imageDir)
+    mkdir(imageDir);
+end
+
+filename = fullfile(imageDir,sprintf('%s_ismb_19.svg', winding_configuration));
+exportgraphics(figure1, filename, 'ContentType', 'vector');
