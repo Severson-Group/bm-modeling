@@ -22,14 +22,14 @@ load_system("Plant")
 load_system("Controller")
 
 %% Specify winding to simulate
-% Update winding_configuration to be 'Separate', 'MP', 'MP2', 'Bridge',
+% Update winding_configuration to be 'Separate', 'MP', 'DNMP', 'Bridge',
 % 'Parallel', or 'MCI' to indicate the type of winding to simulate (see 
 % Fig. 2) 
 winding_configuration = "MCI";
 
 winding_conf_dic = dictionary("Separate", 1, ...
                               "MP", 2, ...
-                              "MP2", 3, ...
+                              "DNMP", 3, ...
                               "Bridge", 4, ...
                               "Parallel", 5, ...
                               "MCI", 6);
@@ -153,7 +153,7 @@ switch(winding_configuration)
         T_m_mp = eye(m,m);
         T_mp_m = T_m_mp^(-1);
     
-    case "MP2"
+    case "DNMP"
         T_mp_term_v = [1 0 0 0 0 0; 0 0 1 0 0 0; 0 0 0 0 1 0; 0 1 0 0 0 0; 0 0 0 1 0 0; 0 0 0 0 0 1];
         T_term_mp_v = T_mp_term_v^(-1);
         T_mp_term_i = [1 0 0 0 0 0; 0 0 1 0 0 0; 0 0 0 0 1 0; 0 1 0 0 0 0; 0 0 0 1 0 0; 0 0 0 0 0 1];

@@ -48,9 +48,10 @@ To reproduce the simulation result of ISMB19:
 2. Specify the desired winding configuration (e.g., MCI) as follows:
 
 ```matlab
- % The input of this function should be 'Separate', 'MP', 'Bridge', 
- % 'Parallel', or 'MCI' 
- winding_configuration = "MCI"; 
+% Update winding_configuration to be 'Separate', 'MP', 'DNMP', 'Bridge',
+% 'Parallel', or 'MCI' to indicate the type of winding to simulate (see 
+% Fig. 2) 
+winding_configuration = "MCI";
 ```
 
 3. Run [`setup_ismb_19.m`](./setup_ismb_19.m).
@@ -68,9 +69,10 @@ To reproduce the simulation result of Actuator:
 2. Specify the desired winding configuration (e.g., MCI) as follows:
 
 ```matlab
- % The input of this function should be 'Separate', 'MP', 'Bridge', 
- % 'Parallel', or 'MCI' 
- winding_configuration = "MCI"; 
+% Update winding_configuration to be 'Separate', 'MP', 'DNMP', 'Bridge',
+% 'Parallel', or 'MCI' to indicate the type of winding to simulate (see 
+% Fig. 2) 
+winding_configuration = "MCI";
 ```
 
 3. Run [`setup_actuator_2026.m`](./setup_actuator_2026.m).
