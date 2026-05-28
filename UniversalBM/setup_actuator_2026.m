@@ -8,7 +8,7 @@
 % presented in Fig. 6 of the following publication:
 %
 % Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, 
-% David Prinz, Wolfgang GRUBER and Eric L. SEVERSON, 
+% David PRINZ, Wolfgang GRUBER and Eric L. SEVERSON, 
 % "Universal Model and Control Framework for Bearingless Motors with Combined Windings"
 % Actuator Journal, 2026. 
 %
