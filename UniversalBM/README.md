@@ -26,7 +26,7 @@ This MATLAB script defines the machine parameters and runs the Simulink simulati
 
 ### [`setup_actuator_2026.m`](./setup_actuator_2026.m)
 
-This MATLAB script defines the machine parameters and runs the Simulink simulation to reproduce the results shown in Fig. 6 of the Actuator journal publication.
+This MATLAB script defines the machine parameters and runs the Simulink simulation to reproduce the results shown in Fig. 6 of the Actuators journal manuscript.
 
 ### [`BearinglessMotorSimulation.slx`](BearinglessMotorSimulation.slx)
 
@@ -34,15 +34,15 @@ Top level Simulink model that integrates both the universal model and the contro
 
 ### [`Plant.slx`](Plant.slx)
 
-The universal bearingless motor model (plant). This corresponds to Fig. 3 in both IMSB19 and Actuator papers.
+The universal bearingless motor model (plant). This corresponds to Fig. 3 in both IMSB19 and Actuators papers.
 
 ### [`Controller.slx`](Controller.slx)
 
-The universal force and torque controller. This corresponds to Fig. 4 in both IMSB19 and Actuator papers.
+The universal force and torque controller. This corresponds to Fig. 4 in both IMSB19 and Actuators papers.
 
 ## How To Reproduce Simulation Results of ISMB19
 
-To reproduce the simulation result of ISMB19:
+To reproduce the simulation result of ISMB19 manuscript:
 
 1. Open [`setup_ismb_19.m`](./setup_ismb_19.m).
 2. Specify the desired winding configuration (e.g., MCI) as follows:
@@ -61,9 +61,9 @@ winding_configuration = "MCI";
 |:-----------------------------------------:|:---------------------------------------------:|:-----------------------------------------------:|:------------------------------------------:|
 | <img src=images/mp-ismb-19.svg width=300> | <img src=images/bridge-ismb-19.svg width=300> | <img src=images/parallel-ismb-19.svg width=300> | <img src=images/mci-ismb-19.svg width=300> |
 
-## How To Reproduce Simulation Results of Actuator
+## How To Reproduce Simulation Results of Actuators Manuscript
 
-To reproduce the simulation result of Actuator:
+To reproduce the simulation result of the Actuators manuscript:
 
 1. Open [`setup_actuator_2026.m`](./setup_actuator_2026.m).
 2. Specify the desired winding configuration (e.g., MCI) as follows:
@@ -76,7 +76,7 @@ winding_configuration = "MCI";
 ```
 
 3. Run [`setup_actuator_2026.m`](./setup_actuator_2026.m).
-  This will reproduce the Simulink simulation results presented in Fig. 6 of Actuator, as follows:
+  This will reproduce the Simulink simulation results presented in Fig. 6 of the Actuators manuscript, as follows:
 
 | **MP**                                    | **Bridge DPNV**                               | **Parallel DPNV**                               | **MCI**                                    |
 |:-----------------------------------------:|:---------------------------------------------:|:-----------------------------------------------:|:------------------------------------------:|
