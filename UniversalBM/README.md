@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This simulation package includes all the necessary files to simulate any bearingless motor with a combined winding. The model was originally developed in the following publication and includes both a universal controller and plant:
+This simulation package includes all necessary files to simulate any bearingless motor with a combined winding. The model was originally developed in the following publication and includes both a universal controller and plant:
 
 ```markdown
 Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, Wolfgang GRUBER and Eric L. SEVERSON,
@@ -10,12 +10,12 @@ Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, Wolfgang GRUB
 19th International Symposium on Magnetic Bearings (ISMB19), 2025.
 ```
 
-The machine parameters were subsequently updated and published in the following publication:
+The machine parameters were subsequently updated and are under review for publication as the following article:
 
 ```markdown
-Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, David Prinz, Wolfgang GRUBER and Eric L. SEVERSON,
+Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, David PRINZ, Wolfgang GRUBER and Eric L. SEVERSON,
 "Universal Model and Control Framework for Bearingless Motors with Combined Windings"
-Actuator Journal, 2026.
+Actuators, 2026.
 ```
 
 ## Folder Contents
