@@ -17,12 +17,12 @@ Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, Wolfgang GRUB
 19th International Symposium on Magnetic Bearings (ISMB19), 2025.
 ```
 
-The machine parameters were subsequently updated and published in the following publication:
+The machine parameters were subsequently updated and are under review for publication as the following article:
 
 ```markdown
-Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, David Prinz, Wolfgang GRUBER and Eric L. SEVERSON,
+Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, David PRINZ, Wolfgang GRUBER and Eric L. SEVERSON,
 "Universal Model and Control Framework for Bearingless Motors with Combined Windings"
-Actuator Journal, 2026.
+Actuators, 2026.
 ```
 
 ## [`MP`](./MP/)
