@@ -9,7 +9,7 @@ This repository houses shared bearingless motor control models developed by the 
 
 ### [`UniversalBM`](./UniversalBM/)
 
-This simulation package includes all the necessary files to simulate any bearingless motor with a combined winding. The model was originally developed in the following publication:
+This simulation package includes all necessary files to simulate any bearingless motor with a combined winding. The model was originally developed in the following publication:
 
 ```markdown
 Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, Wolfgang GRUBER and Eric L. SEVERSON,
