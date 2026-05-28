@@ -413,4 +413,4 @@ if ~isfolder(imageDir)
 end
 
 filename = fullfile(imageDir,sprintf('%s_actuator_2026.svg', lower(winding_configuration)));
-exportgraphics(figure1, filename, 'ContentType', 'vector');
+saveas(figure1, filename);

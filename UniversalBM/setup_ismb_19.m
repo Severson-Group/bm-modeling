@@ -409,4 +409,4 @@ if ~isfolder(imageDir)
 end
 
 filename = fullfile(imageDir,sprintf('%s-ismb-19.svg', lower(winding_configuration)));
-exportgraphics(figure1, filename, 'ContentType', 'vector');
+saveas(figure1, filename);
