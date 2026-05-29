@@ -1,15 +1,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This is the main script that contains universal bearingless motor model. 
-% The MATLAB/Simulink files are available in open-source Github repository:
+% This script is the modified version the universal bearingless motor model
+% published to Actuator Journal 2026. 
+% The MATLAB/Simulink files are available in Github repository:
 % https://github.com/Severson-Group/bm-modeling
 % 
 % Run this setup.m to reproduce the Simulink simulation results
 % presented in Fig. 6 of the following publication:
 %
 % Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, 
-% Wolfgang GRUBER and Eric L. SEVERSON, 
-% "Model and Control Framework for Bearingless Motors with Combined Windings"
-% 19th International Symposium on Magnetic Bearings (ISMB19), 2025. 
+% David PRINZ, Wolfgang GRUBER and Eric L. SEVERSON, 
+% "Universal Model and Control Framework for Bearingless Motors with Combined Windings"
+% Actuator Journal, 2026. 
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -22,33 +23,26 @@ load_system("Plant")
 load_system("Controller")
 
 %% Specify winding to simulate
-% Update winding_configuration to be 'Separate', 'MP', 'MP2', 'Bridge',
+% Update winding_configuration to be 'Separate', 'MP', 'DNMP', 'Bridge',
 % 'Parallel', or 'MCI' to indicate the type of winding to simulate (see 
 % Fig. 2) 
 winding_configuration = "MCI";
 
 winding_conf_dic = dictionary("Separate", 1, ...
                               "MP", 2, ...
-                              "MP2", 3, ...
+                              "DNMP", 3, ...
                               "Bridge", 4, ...
                               "Parallel", 5, ...
                               "MCI", 6);
 winding_conf_num = winding_conf_dic(winding_configuration);
 
 %% Specify simulation parameters
-Tend = 0.03; % Simulation stop time (s)
-Tsim = 1e-5; % Simulation sampling time (s)
+Tend = 75*0.03*4/7; % Simulation stop time (s)
+Tsim = 2e-5; % Simulation sampling time (s)
 
-tau_ref = 0.2; % Torque reference (Nm)
+tau_ref = -0.1; % Torque reference (Nm)
 tau_start = (1/6)*Tend; % Torque start time (s)
 tau_end = (4/6)*Tend; % Torque end time (s)
-
-Fx_ref = 9; % Fx force reference (N)
-Fx_start = 0; % x-axis force start time (s)
-Fx_end = (2/6)*Tend; % x-axis force end time (s)
-Fy_ref = 9; % Fy force reference (N)
-Fy_start = (3/6)*Tend; % y-axis force start time (s)
-Fy_end = (5/6)*Tend; % y-axis force end time (s)
 
 id_ref = 0; % id current reference (A)
 id_start = 0; % d-axis current start time (s)
@@ -64,20 +58,27 @@ else
     V_SAT = V_DC; % Single phase inverter saturates at the DC bus
 end
 
-speed_ref = 7500; % Shaft speed (r/min)
+speed_ref = 100; % Shaft speed (r/min)
 
 %% 2. Multiphase combined winding bearingless motor model (see Section 2)
 % 2.1 Airgap field calculations
-p = 4; % Number of torque pole-pairs
-ps = 5; % Number of suspension pole-pairs
+p = 7; % Number of torque pole-pairs
+ps = 8; % Number of suspension pole-pairs
 
 m = 6;  % Number of phases
 alpha_t = wrapToPi(2*pi/m*p); % See Eq. (2)
 alpha_s = wrapToPi(2*pi/m*ps); % See Eq. (2)
 
 % 2.2 Force and torque model
-kt = 0.02; % Torque constant (Nm/Apk) (see Eq. (6))
-kf = 1.8; % Force constant (N/Apk) (see Eq. (6))
+kt = 0.0973653; % Torque constant (Nm/Apk) (see Eq. (6))
+kf = 3.27039; % Force constant (N/Apk) (see Eq. (6))
+
+Fx_ref = 0.3*kf; % Fx force reference (N)
+Fx_start = 0; % x-axis force start time (s)
+Fx_end = (2/6)*Tend; % x-axis force end time (s)
+Fy_ref = 0.3*kf; % Fy force reference (N)
+Fy_start = (3/6)*Tend; % y-axis force start time (s)
+Fy_end = (5/6)*Tend; % y-axis force end time (s)
 
 tau_hat = 2/m*kt;
 Fx_hat = 2/m*kf;
@@ -92,13 +93,16 @@ end
 Fy_hat = -Kis * 2/m*kf;
 
 % 2.3. Electric model
-ke = 0.00667;  % back-emf constant (Vpk/(mech rad/s)) (see Eq. (7))
+ke = kt/(3*sqrt(2));  % back-emf constant (Vpk/(mech rad/s)) (see Eq. (7))
 
-R = 0.3; % Phase resistance (Ohm)
+R = 0.45; % Phase resistance (Ohm)
 Rmat = R*eye(6, 6);
 
-Lt = 300e-6; % Self-inductance of torque system without leakage
-Ls = 450e-6; % Self-inductance of suspension system without leakage
+Lt_Ls = 725e-6; % Inductance value
+ktw = 0.933; % Torque winding factor
+ksw = 0.866; % Suspension winding factor
+Ls = Lt_Ls/(1 + (ktw/ksw)^2); % Self-inductance of torque system without leakage
+Lt = Lt_Ls - Ls; % Self-inductance of suspension system without leakage
 Llkg = 0.01*Lt; % Assume leakage inductance is 1% (needed so that L matrix 
 % is non-singular)
 
@@ -153,7 +157,7 @@ switch(winding_configuration)
         T_m_mp = eye(m,m);
         T_mp_m = T_m_mp^(-1);
     
-    case "MP2"
+    case "DNMP"
         T_mp_term_v = [1 0 0 0 0 0; 0 0 1 0 0 0; 0 0 0 0 1 0; 0 1 0 0 0 0; 0 0 0 1 0 0; 0 0 0 0 0 1];
         T_term_mp_v = T_mp_term_v^(-1);
         T_mp_term_i = [1 0 0 0 0 0; 0 0 1 0 0 0; 0 0 0 0 1 0; 0 1 0 0 0 0; 0 0 0 1 0 0; 0 0 0 0 0 1];
@@ -329,7 +333,7 @@ xlabel('Time [s]','Interpreter','latex');
 ylabel('$\tau$ (Nm)','Interpreter','latex');
 legend('$\tau^{\mathrm{ref}}$', '$\tau$','Interpreter','latex','Location','east');
 xlim([0 Tmax]);
-% ylim([-2.5 2.5]);
+ylim([-0.2 0.05]);
 
 subplot(6,1,2);
 % Plot forces
@@ -342,7 +346,7 @@ xlabel('Time [s]','Interpreter','latex');
 ylabel('$F_{\mathrm{x}}$, $F_{\mathrm{y}}$ (N)','Interpreter','latex');
 legend('$F_\mathrm{x}^\mathrm{ref}$','$F_{\mathrm{x}}$','$F_\mathrm{y}^\mathrm{ref}$','$F_{\mathrm{y}}$','Interpreter','latex','Location','east');
 xlim([0 Tmax]);
-% ylim([-2.5 2.5]);
+ylim([-0.2 1.5]);
 
 % Plot torque current
 subplot(6,1,3);
@@ -355,7 +359,7 @@ xlabel('Time [s]','Interpreter','latex');
 ylabel('$\vec{i}_\mathrm{t}^{\,\, \rm T}$ (A)','Interpreter','latex');
 legend('$i_\mathrm{q}^\mathrm{ref}$','$i_\mathrm{q}$','Interpreter','latex','Location','east');
 xlim([0 Tmax]);
-% ylim([-2.5 2.5]);
+ylim([-2.2 2.2]);
 
 % Plot suspension current
 subplot(6,1,4);
@@ -368,7 +372,7 @@ xlabel('Time [s]','Interpreter','latex');
 ylabel('$\vec{i}_\mathrm{s}^{\,\, \rm S}$ (A)','Interpreter','latex');
 legend('$i_\mathrm{x}^\mathrm{ref}$', '$i_\mathrm{x}$', '$i_\mathrm{y}^\mathrm{ref}$', '$i_\mathrm{y}$','Interpreter','latex','Location','east');
 xlim([0 Tmax]);
-% ylim([-2.5 2.5]);
+ylim([-2.2 2.2]);
 
 % Plot terminal current
 subplot(6,1,5);
@@ -383,7 +387,7 @@ xlabel('Time [s]','Interpreter','latex');
 ylabel('$\mathbf{i}_{\mathrm{term}}$ (A)','Interpreter','latex');
 legend('$I_{u}$','$I_{u^\prime}$','Interpreter','latex','Location','east');
 xlim([0 Tmax]);
-% ylim([-2.5 2.5]);
+ylim([-2.2 2.2]);
 
 % Plot terminal voltage
 subplot(6,1,6);
@@ -400,3 +404,13 @@ xlim([0 Tmax]);
 set(findall(gcf, '-property', 'FontName'), 'FontName', 'Times New Roman');
 
 set(figure1,'Units','inches','Position',[(Inch_SS(3)-width)/2 (Inch_SS(4)-height)/2 width height]);
+
+scriptDir = fileparts(mfilename('fullpath'));
+imageDir = fullfile(scriptDir, 'images');
+
+if ~isfolder(imageDir)
+    mkdir(imageDir);
+end
+
+filename = fullfile(imageDir,sprintf('%s_actuator_2026.svg', lower(winding_configuration)));
+saveas(figure1, filename);
