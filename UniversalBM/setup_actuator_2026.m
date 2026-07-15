@@ -26,7 +26,7 @@ load_system("Controller")
 % Update winding_configuration to be 'Separate', 'MP', 'DNMP', 'Bridge',
 % 'Parallel', or 'MCI' to indicate the type of winding to simulate (see 
 % Fig. 2) 
-winding_configuration = "MCI";
+winding_configuration = "DNMP";
 
 winding_conf_dic = dictionary("Separate", 1, ...
                               "MP", 2, ...
@@ -37,7 +37,7 @@ winding_conf_dic = dictionary("Separate", 1, ...
 winding_conf_num = winding_conf_dic(winding_configuration);
 
 %% Specify simulation parameters
-Tend = 75*0.03*4/7; % Simulation stop time (s)
+Tend = 1.5; % Simulation stop time (s)
 Tsim = 2e-5; % Simulation sampling time (s)
 
 tau_ref = -0.1; % Torque reference (Nm)
@@ -313,8 +313,7 @@ for idx = 2:length(obj2ext)
 end
 
 time = sig_obj.(obj2ext{2}).Values.Time;
-time = time*1e3;  % Convert to msec
-Tmax = Tend*1e3;
+Tmax = Tend;
 
 %% Plot figure
 width = 5.43*0.7; 
@@ -395,7 +394,7 @@ hold on;
 for i = [1, 4] % Columns 1-6 contain current data
     plot(time, squeeze(sig_val.v_term(i,:)), 'Color', colors(i,:), 'LineWidth', lw);
 end
-xlabel('Time (ms)','Interpreter','latex');
+xlabel('Time (s)','Interpreter','latex');
 ylabel('$\mathbf{v}_{\mathrm{term}}$ (V)','Interpreter','latex');
 legend('$v_{u}$','$v_{u^\prime}$','Interpreter','latex','Location','east');
 xlim([0 Tmax]);
