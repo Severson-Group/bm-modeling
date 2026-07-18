@@ -26,7 +26,7 @@ This MATLAB script defines the machine parameters and runs the Simulink simulati
 
 ### [`setup_actuator_2026.m`](./setup_actuator_2026.m)
 
-This MATLAB script defines the machine parameters and runs the Simulink simulation to reproduce the results shown in Fig. 6 of the Actuators journal manuscript.
+This MATLAB script defines the machine parameters and runs the Simulink simulation to reproduce the results shown in Fig. 7 of the Actuators journal manuscript.
 
 ### [`BearinglessMotorSimulation.slx`](BearinglessMotorSimulation.slx)
 
@@ -34,11 +34,11 @@ Top level Simulink model that integrates both the universal model and the contro
 
 ### [`Plant.slx`](Plant.slx)
 
-The universal bearingless motor model (plant). This corresponds to Fig. 3 in both IMSB19 and Actuators papers.
+The universal bearingless motor model (plant). This corresponds to Fig. 3 in IMSB19 and Fig. 4 in Actuators papers.
 
 ### [`Controller.slx`](Controller.slx)
 
-The universal force and torque controller. This corresponds to Fig. 4 in both IMSB19 and Actuators papers.
+The universal force and torque controller. This corresponds to Fig. 4 in IMSB19 and Fig. 5 in Actuators papers.
 
 ## How To Reproduce Simulation Results of ISMB19
 
@@ -71,16 +71,15 @@ To reproduce the simulation result of the Actuators manuscript:
 ```matlab
 % Update winding_configuration to be 'Separate', 'MP', 'DNMP', 'Bridge',
 % 'Parallel', or 'MCI' to indicate the type of winding to simulate (see 
-% Fig. 2) 
+% Fig. 3) 
 winding_configuration = "MCI";
 ```
 
 3. Run [`setup_actuator_2026.m`](./setup_actuator_2026.m).
-  This will reproduce the Simulink simulation results presented in Fig. 6 of the Actuators manuscript, as follows:
+  This will reproduce the Simulink simulation results presented in Fig. 7 of the Actuators manuscript, as follows:
 
-| **MP**                                    | **Bridge DPNV**                               | **Parallel DPNV**                               | **MCI**                                    |
+| **DNMP**                                    | **Bridge DPNV**                               | **Parallel DPNV**                               | **MCI**                                    |
 |:-----------------------------------------:|:---------------------------------------------:|:-----------------------------------------------:|:------------------------------------------:|
-| <img src=images/mp-actuator-2026.svg width=300> | <img src=images/bridge-actuator-2026.svg width=300> | <img src=images/parallel-actuator-2026.svg width=300> | <img src=images/mci-actuator-2026.svg width=300> |
-
+| <img src=images/dnmp-actuator-2026.svg width=300> | <img src=images/bridge-actuator-2026.svg width=300> | <img src=images/parallel-actuator-2026.svg width=300> | <img src=images/mci-actuator-2026.svg width=300> |
 
 *Note: the Simulink files were created using MATLAB R2024b.*

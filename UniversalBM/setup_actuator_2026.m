@@ -5,7 +5,7 @@
 % https://github.com/Severson-Group/bm-modeling
 % 
 % Run this setup.m to reproduce the Simulink simulation results
-% presented in Fig. 6 of the following publication:
+% presented in Fig. 7 of the following publication:
 %
 % Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, 
 % David PRINZ, Wolfgang GRUBER and Eric L. SEVERSON, 
@@ -25,8 +25,8 @@ load_system("Controller")
 %% Specify winding to simulate
 % Update winding_configuration to be 'Separate', 'MP', 'DNMP', 'Bridge',
 % 'Parallel', or 'MCI' to indicate the type of winding to simulate (see 
-% Fig. 2) 
-winding_configuration = "DNMP";
+% Fig. 3) 
+winding_configuration = "MCI";
 
 winding_conf_dic = dictionary("Separate", 1, ...
                               "MP", 2, ...
@@ -411,5 +411,5 @@ if ~isfolder(imageDir)
     mkdir(imageDir);
 end
 
-filename = fullfile(imageDir,sprintf('%s_actuator_2026.svg', lower(winding_configuration)));
+filename = fullfile(imageDir,sprintf('%s-actuator-2026.svg', lower(winding_configuration)));
 saveas(figure1, filename);
