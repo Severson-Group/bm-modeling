@@ -5,7 +5,7 @@
 % https://github.com/Severson-Group/bm-modeling
 % 
 % Run this setup.m to reproduce the Simulink simulation results
-% presented in Fig. 6 of the following publication:
+% presented in Fig. 7 of the following publication:
 %
 % Takahiro NOGUCHI, Mohamadhasan MOKHTARABADI, Kamisetti N V PRASAD, 
 % David PRINZ, Wolfgang GRUBER and Eric L. SEVERSON, 
@@ -25,7 +25,7 @@ load_system("Controller")
 %% Specify winding to simulate
 % Update winding_configuration to be 'Separate', 'MP', 'DNMP', 'Bridge',
 % 'Parallel', or 'MCI' to indicate the type of winding to simulate (see 
-% Fig. 2) 
+% Fig. 3) 
 winding_configuration = "MCI";
 
 winding_conf_dic = dictionary("Separate", 1, ...
@@ -37,7 +37,7 @@ winding_conf_dic = dictionary("Separate", 1, ...
 winding_conf_num = winding_conf_dic(winding_configuration);
 
 %% Specify simulation parameters
-Tend = 75*0.03*4/7; % Simulation stop time (s)
+Tend = 1.5; % Simulation stop time (s)
 Tsim = 2e-5; % Simulation sampling time (s)
 
 tau_ref = -0.1; % Torque reference (Nm)
@@ -313,10 +313,12 @@ for idx = 2:length(obj2ext)
 end
 
 time = sig_obj.(obj2ext{2}).Values.Time;
-time = time*1e3;  % Convert to msec
-Tmax = Tend*1e3;
+Tmax = Tend;
 
 %% Plot figure
+step = 10;
+plot_idx = 1:step:length(time);
+
 width = 5.43*0.7; 
 height = 1.2*3*4.38*2 / 3*0.7;
 set(0,'units','inches');
@@ -327,8 +329,8 @@ figure1 = figure;
 % Plot torque
 subplot(6,1,1);
 hold on;
-plot(time, squeeze(sig_val.tau_ref), 'LineStyle', '--', 'Color', 'b', 'LineWidth', lw);
-plot(time, squeeze(sig_val.tau), 'Color', 'b', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.tau_ref(plot_idx)), 'LineStyle', '--', 'Color', 'b', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.tau(plot_idx)), 'Color', 'b', 'LineWidth', lw);
 xlabel('Time [s]','Interpreter','latex');
 ylabel('$\tau$ (Nm)','Interpreter','latex');
 legend('$\tau^{\mathrm{ref}}$', '$\tau$','Interpreter','latex','Location','east');
@@ -338,10 +340,10 @@ ylim([-0.2 0.05]);
 subplot(6,1,2);
 % Plot forces
 hold on;
-plot(time, squeeze(sig_val.Fx_ref), 'LineStyle', '--', 'Color', 'r', 'LineWidth', lw);
-plot(time, squeeze(sig_val.Fx), 'Color', 'r', 'LineWidth', lw);
-plot(time, squeeze(sig_val.Fy_ref), 'LineStyle', '--', 'Color', 'g', 'LineWidth', lw);
-plot(time, squeeze(sig_val.Fy), 'Color', 'g', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.Fx_ref(plot_idx)), 'LineStyle', '--', 'Color', 'r', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.Fx(plot_idx)), 'Color', 'r', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.Fy_ref(plot_idx)), 'LineStyle', '--', 'Color', 'g', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.Fy(plot_idx)), 'Color', 'g', 'LineWidth', lw);
 xlabel('Time [s]','Interpreter','latex');
 ylabel('$F_{\mathrm{x}}$, $F_{\mathrm{y}}$ (N)','Interpreter','latex');
 legend('$F_\mathrm{x}^\mathrm{ref}$','$F_{\mathrm{x}}$','$F_\mathrm{y}^\mathrm{ref}$','$F_{\mathrm{y}}$','Interpreter','latex','Location','east');
@@ -352,9 +354,9 @@ ylim([-0.2 1.5]);
 subplot(6,1,3);
 hold on;
 % plot(time, squeeze(sig_val.id_ref), 'Color', [231/255, 143/255, 106/255], 'LineWidth', lw);
-plot(time, squeeze(sig_val.iq_ref), 'LineStyle', '--', 'Color', 'b', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.iq_ref(plot_idx)), 'LineStyle', '--', 'Color', 'b', 'LineWidth', lw);
 % plot(time, squeeze(sig_val.id), 'Color', [136/255, 62/255, 150/255], 'LineWidth', lw);
-plot(time, squeeze(sig_val.iq), 'Color', 'b', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.iq(plot_idx)), 'Color', 'b', 'LineWidth', lw);
 xlabel('Time [s]','Interpreter','latex');
 ylabel('$\vec{i}_\mathrm{t}^{\,\, \rm T}$ (A)','Interpreter','latex');
 legend('$i_\mathrm{q}^\mathrm{ref}$','$i_\mathrm{q}$','Interpreter','latex','Location','east');
@@ -364,10 +366,10 @@ ylim([-2.2 2.2]);
 % Plot suspension current
 subplot(6,1,4);
 hold on;
-plot(time, squeeze(sig_val.ix_ref), 'LineStyle', '--', 'Color', 'r', 'LineWidth', lw);
-plot(time, squeeze(sig_val.ix), 'Color', 'r', 'LineWidth', lw);
-plot(time, squeeze(sig_val.iy_ref), 'LineStyle', '--', 'Color', 'g', 'LineWidth', lw);
-plot(time, squeeze(sig_val.iy), 'Color', 'g', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.ix_ref(plot_idx)), 'LineStyle', '--', 'Color', 'r', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.ix(plot_idx)), 'Color', 'r', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.iy_ref(plot_idx)), 'LineStyle', '--', 'Color', 'g', 'LineWidth', lw);
+plot(time(plot_idx), squeeze(sig_val.iy(plot_idx)), 'Color', 'g', 'LineWidth', lw);
 xlabel('Time [s]','Interpreter','latex');
 ylabel('$\vec{i}_\mathrm{s}^{\,\, \rm S}$ (A)','Interpreter','latex');
 legend('$i_\mathrm{x}^\mathrm{ref}$', '$i_\mathrm{x}$', '$i_\mathrm{y}^\mathrm{ref}$', '$i_\mathrm{y}$','Interpreter','latex','Location','east');
@@ -381,7 +383,7 @@ colors = lines(6); % Generate 6 types of colors
 colors(1,:) = [0 0 1];
 colors(4,:) = [1 0 0];
 for i = [1, 4] % Columns 1-6 contain current data
-    plot(time, squeeze(sig_val.i_term(:,i)), 'Color', colors(i,:), 'LineWidth', lw);
+    plot(time(plot_idx), squeeze(sig_val.i_term(plot_idx,i)), 'Color', colors(i,:), 'LineWidth', lw);
 end
 xlabel('Time [s]','Interpreter','latex');
 ylabel('$\mathbf{i}_{\mathrm{term}}$ (A)','Interpreter','latex');
@@ -393,9 +395,9 @@ ylim([-2.2 2.2]);
 subplot(6,1,6);
 hold on;
 for i = [1, 4] % Columns 1-6 contain current data
-    plot(time, squeeze(sig_val.v_term(i,:)), 'Color', colors(i,:), 'LineWidth', lw);
+    plot(time(plot_idx), squeeze(sig_val.v_term(i,plot_idx)), 'Color', colors(i,:), 'LineWidth', lw);
 end
-xlabel('Time (ms)','Interpreter','latex');
+xlabel('Time (s)','Interpreter','latex');
 ylabel('$\mathbf{v}_{\mathrm{term}}$ (V)','Interpreter','latex');
 legend('$v_{u}$','$v_{u^\prime}$','Interpreter','latex','Location','east');
 xlim([0 Tmax]);
@@ -412,5 +414,5 @@ if ~isfolder(imageDir)
     mkdir(imageDir);
 end
 
-filename = fullfile(imageDir,sprintf('%s_actuator_2026.svg', lower(winding_configuration)));
+filename = fullfile(imageDir,sprintf('%s-actuator-2026.svg', lower(winding_configuration)));
 saveas(figure1, filename);
